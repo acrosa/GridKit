@@ -8,6 +8,7 @@ Ships with a curated collection of professional grid and typographic layout pres
 
 > GridKit is a debug tool: it compiles to a no-op in release builds unless explicitly force-enabled.
 
+<img width="603" height="1311" alt="IMG_4471" src="https://github.com/user-attachments/assets/fbc781be-7658-4847-a7c1-4a3e521c764e" />
 <img width="1210" height="834" alt="IMG_0138" src="https://github.com/user-attachments/assets/649985ad-87fc-4559-9473-e3bd7a4d15cd" />
 
 ## Installation
