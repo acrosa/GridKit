@@ -8,13 +8,7 @@ Ships with a curated collection of professional grid and typographic layout pres
 
 > GridKit is a debug tool: it compiles to a no-op in release builds unless explicitly force-enabled.
 
-<!-- Screenshots: add overlay.png / panel.png / presets.png to docs/, then uncomment.
-## Screenshots
-
-| Grid overlay | Control pill & panel | Preset browser |
-|:---:|:---:|:---:|
-| ![Layout grid overlaid on a running app](docs/overlay.png) | ![Draggable control pill and configuration panel](docs/panel.png) | ![Preset browser with live thumbnails](docs/presets.png) |
--->
+<img width="1210" height="834" alt="IMG_0138" src="https://github.com/user-attachments/assets/649985ad-87fc-4559-9473-e3bd7a4d15cd" />
 
 ## Installation
 
