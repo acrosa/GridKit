@@ -1,0 +1,35 @@
+:root { color-scheme: light dark; --fg: #1a1a1a; --bg: #ffffff; --muted: #6b6b70; --line: #e6e6ea; --brand: #4f46e5; }
+@media (prefers-color-scheme: dark) { :root { --fg: #f1f1f4; --bg: #121214; --muted: #9a9aa3; --line: #2a2a30; --brand: #8b85ff; } }
+* { box-sizing: border-box; }
+html { font-size: 16px; }
+body { margin: 0; font: 16px/24px -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif; color: var(--fg); background: var(--bg); }
+header.site { position: sticky; top: 0; height: 64px; display: flex; align-items: center; padding: 0 24px; gap: 16px; border-bottom: 1px solid var(--line); background: var(--bg); z-index: 10; }
+header.site .brand { font-weight: 700; letter-spacing: -0.01em; }
+header.site nav { margin-left: auto; display: flex; gap: 24px; color: var(--muted); font-size: 14px; }
+main { padding: 0 24px 96px; max-width: 1200px; margin: 0 auto; }
+.hero { padding: 72px 0 48px; }
+.hero h1 { font-size: 48px; line-height: 56px; margin: 0 0 16px; letter-spacing: -0.02em; max-width: 720px; }
+.hero p { font-size: 18px; line-height: 24px; color: var(--muted); max-width: 640px; margin: 0 0 24px; }
+.hero .actions { display: flex; gap: 12px; flex-wrap: wrap; }
+button.primary, button.secondary { font: inherit; padding: 8px 16px; border-radius: 8px; border: 1px solid var(--line); cursor: pointer; background: var(--bg); color: var(--fg); }
+button.primary { background: var(--brand); color: #fff; border-color: transparent; }
+kbd { font-family: ui-monospace, Menlo, monospace; font-size: 13px; padding: 1px 6px; border: 1px solid var(--line); border-radius: 4px; background: rgba(127,127,127,0.08); }
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 16px; }
+.card { grid-column: span 4; border: 1px solid var(--line); border-radius: 12px; padding: 24px; }
+.card h3 { margin: 0 0 8px; font-size: 18px; line-height: 24px; }
+.card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 24px; }
+.card.wide { grid-column: span 8; }
+.card.narrow { grid-column: span 4; }
+.section { padding: 48px 0 0; }
+.section h2 { font-size: 28px; line-height: 32px; margin: 0 0 16px; }
+.section p { max-width: 640px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.chip { font-size: 13px; padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; }
+footer.site { border-top: 1px solid var(--line); padding: 24px; color: var(--muted); font-size: 14px; text-align: center; }
+@media (max-width: 767px) {
+  header.site { height: 56px; padding: 0 16px; }
+  main { padding: 0 16px 64px; }
+  .hero h1 { font-size: 32px; line-height: 40px; }
+  .grid { grid-template-columns: repeat(4, 1fr); }
+  .card, .card.wide, .card.narrow { grid-column: span 4; }
+}
