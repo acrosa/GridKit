@@ -5,6 +5,7 @@ A development-time SwiftUI library that overlays configurable layout grids on to
 Ships with a curated collection of professional grid and typographic layout presets — from classic 12-column web-style grids to magazine-inspired modular and asymmetric grids.
 
 **Platform:** iOS 16+ · Swift 5.9+ · Zero dependencies · SPM
+**Web:** [`gridkit-react`](web/README.md) — the same overlay, presets and JSON format for React sites.
 
 > GridKit is a debug tool: it compiles to a no-op in release builds unless explicitly force-enabled.
 
@@ -110,6 +111,22 @@ Summoned by the activation gesture — or always present as a floating pill in `
 - Lines are pixel-snapped (hairlines at 1/scale pt, odd-pixel strokes centered on pixel centers) for crisp rendering on 2x/3x displays.
 - All layout math lives in `GridGeometry`, a pure, unit-tested layer with no UIKit/SwiftUI dependencies.
 - One overlay window per scene (multi-window iPad support); the overlay is hidden from the accessibility tree while the panel is fully accessible.
+
+## Web version (React)
+
+[`web/`](web/) contains **gridkit-react**, a port of the library for React web apps. One component at the app root adds the same floating pill, control panel and grid overlay on top of your running site:
+
+```bash
+npm install --save-dev gridkit-react
+```
+
+```tsx
+import { GridKitOverlay } from "gridkit-react";
+
+<GridKitOverlay />   // pill in the corner + Alt/⌥+Shift+G; renders nothing in production
+```
+
+It shares the JSON configuration format with the iOS library — load the same `brand-grid.json` on both — and the geometry layer is a line-for-line port tested against the same cases. See [web/README.md](web/README.md).
 
 ## Privacy & App Review
 
