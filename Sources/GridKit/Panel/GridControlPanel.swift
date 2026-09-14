@@ -9,9 +9,12 @@ struct GridControlPanel: View {
     /// Size of the overlay window's content area — used to clamp dragging so the
     /// control can never be pushed fully off-screen (and lost).
     var containerSize: CGSize = .zero
+    /// Settled drag offset, owned by `GridOverlayRoot` so the passthrough window's
+    /// hit region can follow the control (`.offset` moves rendering, not layout,
+    /// so the reported geometry alone doesn't track the drag).
+    @Binding var offset: CGSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State private var offset: CGSize = .zero
     @GestureState private var dragTranslation: CGSize = .zero
 
     var body: some View {
@@ -22,12 +25,24 @@ struct GridControlPanel: View {
                 expandedPanel
             }
         }
-        .offset(
-            x: offset.width + dragTranslation.width,
-            y: offset.height + dragTranslation.height
-        )
+        .offset(x: effectiveOffset.width, y: effectiveOffset.height)
         .padding(.trailing, 12)
         .padding(.bottom, 40)
+        .onChange(of: containerSize) { _ in
+            // Rotation / scene resize can strand a previously valid offset off-screen.
+            offset = clamped(offset)
+        }
+    }
+
+    /// Displayed offset: clamped continuously so the control tracks the finger but
+    /// never crosses the screen edge (no snap-back on release).
+    private var effectiveOffset: CGSize {
+        clamped(
+            CGSize(
+                width: offset.width + dragTranslation.width,
+                height: offset.height + dragTranslation.height
+            )
+        )
     }
 
     private var dragGesture: some Gesture {

@@ -8,6 +8,11 @@ struct GridOverlayRoot: View {
     /// each scene's window only captures touches over its own controls (multi-window safe).
     weak var window: GridOverlayWindow?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    /// Settled drag offset of the control panel. Owned here (not by the panel) because the
+    /// reported hit region must be shifted by it: `.offset` moves the control visually and for
+    /// SwiftUI hit-testing, but not its layout frame — reporting the raw geometry left the
+    /// window capturing touches at the pre-drag spot while the control sat elsewhere, dead.
+    @State private var panelOffset: CGSize = .zero
 
     var body: some View {
         GeometryReader { proxy in
@@ -32,9 +37,9 @@ struct GridOverlayRoot: View {
                 // tap "GridKit" to open the config panel, drag to move. Always present in
                 // floating-button mode; in gesture-activation modes it rides in with the grid.
                 if kit.isVisible || kit.activation == .floatingButton {
-                    GridControlPanel(kit: kit, containerSize: proxy.size)
+                    GridControlPanel(kit: kit, containerSize: proxy.size, offset: $panelOffset)
                         .transition(.opacity)
-                        .reportInteractiveFrame("gridkit.panel", in: window)
+                        .reportInteractiveFrame("gridkit.panel", offsetBy: panelOffset, in: window)
                 } else {
                     // No control on screen (overlay hidden in a gesture-activation mode) → drop the
                     // stale hit region, otherwise the passthrough window keeps swallowing app taps
@@ -53,13 +58,16 @@ struct GridOverlayRoot: View {
 
 private extension View {
     /// Reports this view's window-space frame to the owning overlay window so it captures touches
-    /// over the control (and only it).
-    func reportInteractiveFrame(_ id: String, in window: GridOverlayWindow?) -> some View {
+    /// over the control (and only it). `offsetBy` is the control's settled drag offset: the
+    /// geometry here is the *layout* frame, which `.offset` doesn't move, so the drag must be
+    /// re-applied to keep the hit region under the visible control.
+    func reportInteractiveFrame(_ id: String, offsetBy offset: CGSize = .zero, in window: GridOverlayWindow?) -> some View {
         background(
             GeometryReader { geo in
+                let frame = geo.frame(in: .global).offsetBy(dx: offset.width, dy: offset.height)
                 Color.clear
-                    .onAppear { window?.interactiveFrames[id] = geo.frame(in: .global) }
-                    .onChange(of: geo.frame(in: .global)) { frame in
+                    .onAppear { window?.interactiveFrames[id] = frame }
+                    .onChange(of: frame) { frame in
                         window?.interactiveFrames[id] = frame
                     }
                 // NB: intentionally no `onDisappear` clear. Collapsing the panel (and rotation)
