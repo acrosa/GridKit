@@ -13,6 +13,12 @@ Development-time layout grid overlays for React web apps — the web counterpart
 npm install --save-dev gridkit-react
 ```
 
+Or straight from this repository (the `prepare` script builds `dist/` on install; pnpm needs `gridkit-react` in `onlyBuiltDependencies`):
+
+```bash
+pnpm add -D "gridkit-react@github:acrosa/GridKit#main&path:/web"
+```
+
 ## Setup
 
 One component at the app root:
