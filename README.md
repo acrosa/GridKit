@@ -128,6 +128,27 @@ import { GridKitOverlay } from "gridkit-react";
 
 It shares the JSON configuration format with the iOS library — load the same `brand-grid.json` on both — and the geometry layer is a line-for-line port tested against the same cases. See [web/README.md](web/README.md).
 
+## Claude Code skill: grid alignment audit
+
+[`skills/grid-align`](skills/grid-align/SKILL.md) is a [Claude Code](https://claude.com/claude-code) skill. It checks an existing app against a grid and, if you ask, rewrites the layout to fit it. It works on SwiftUI/UIKit apps and web apps (CSS, Tailwind, CSS-in-JS, React). GridKit doesn't need to be installed in the app.
+
+```
+/plugin install gridkit --marketplace acrosa/GridKit
+```
+
+On older Claude Code versions, install in two steps: `/plugin marketplace add acrosa/GridKit`, then `/plugin install gridkit@gridkit`.
+
+Then ask Claude something like *"audit this app against a 12-column grid with an 8 pt spacing scale"*, or run `/gridkit:grid-align`. The skill goes through these steps:
+
+1. **Spec:** you pick a GridKit preset, a GridKit JSON or custom values (columns, gutter, margins, max width, rhythm, spacing scale, breakpoints, target devices). The result is saved as `.gridkit/spec.json`.
+2. **Audit:**
+   - A static scan finds off-scale paddings, stack spacings, gaps, insets, offsets and Tailwind classes.
+   - A runtime capture measures real element frames with Playwright on the web, or with an XCUITest that dumps accessibility frames on iOS.
+   - Both are checked for margin intrusions, near-miss column edges, wrong spans, doubled margins, off-rhythm gaps and line heights, key lines and overflow.
+3. **Evidence:** screenshots per route and viewport, with the grid and numbered findings drawn on top.
+4. **Report:** `.gridkit/audit/REPORT.md`, with findings grouped by root cause and a fix plan.
+5. **Fixes (optional):** grid tokens first, then idiomatic layout fixes. On iOS that means `containerRelativeFrame`, `contentMargins`, a column `Layout` and size-class variants. On the web it means CSS Grid spans, `subgrid`, container/safe-area margins and rhythm-snapped line heights. Afterwards the skill re-audits and reports before/after.
+
 ## Privacy & App Review
 
 No data collection, no networking. Inert in release builds by default; ship `force: true` only in internal/TestFlight builds.
@@ -138,4 +159,4 @@ No data collection, no networking. Inert in release builds by default; ship `for
 swift test   # on a macOS host, or via an iOS simulator destination in Xcode
 ```
 
-Unit tests cover configuration codability (including the JSON fixture), rhythm derivation from fonts, pixel-snapping math, column/row/module/baseline geometry, and preset-library integrity. Snapshot tests of each preset at key device sizes and UI tests for activation gestures are on the roadmap alongside the alignment audit, macOS/visionOS support, and Xcode Previews integration.
+Unit tests cover configuration codability (including the JSON fixture), rhythm derivation from fonts, pixel-snapping math, column/row/module/baseline geometry, and preset-library integrity. Snapshot tests of each preset at key device sizes and UI tests for activation gestures are on the roadmap alongside an in-app alignment audit (the [grid-align skill](skills/grid-align/SKILL.md) covers this from Claude Code today), macOS/visionOS support, and Xcode Previews integration.
