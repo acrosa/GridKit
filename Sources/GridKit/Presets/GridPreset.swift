@@ -58,12 +58,14 @@ public extension GridPreset {
         name: "Swiss 12-Column",
         category: .columnSystems,
         configuration: GridConfiguration(
-            columns: ColumnSpec(count: 12, gutter: 16, margin: 16)
+            columns: ColumnSpec(count: 12, gutter: 16, margin: 16),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
         compactConfiguration: GridConfiguration(
-            columns: ColumnSpec(count: 4, gutter: 16, margin: 16)
+            columns: ColumnSpec(count: 4, gutter: 16, margin: 16),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
-        notes: "The workhorse of Swiss-school layout: 12 divides into halves, thirds, quarters and sixths, making almost any arrangement possible. Renders 4 columns in compact width."
+        notes: "The workhorse of Swiss-school layout: 12 divides into halves, thirds, quarters and sixths, making almost any arrangement possible. Renders 4 columns in compact width, over an 8 pt baseline grid for vertical rhythm."
     )
 
     /// 8 columns for tablet/wide layouts.
@@ -72,12 +74,14 @@ public extension GridPreset {
         name: "8-Column",
         category: .columnSystems,
         configuration: GridConfiguration(
-            columns: ColumnSpec(count: 8, gutter: 16, margin: 24)
+            columns: ColumnSpec(count: 8, gutter: 16, margin: 24),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
         compactConfiguration: GridConfiguration(
-            columns: ColumnSpec(count: 4, gutter: 16, margin: 16)
+            columns: ColumnSpec(count: 4, gutter: 16, margin: 16),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
-        notes: "A tablet-friendly system: 8 columns pair naturally with split views and two-up layouts on iPad."
+        notes: "A tablet-friendly system: 8 columns pair naturally with split views and two-up layouts on iPad. 8 pt baseline rhythm."
     )
 
     /// 6 columns with generous 24 pt gutters.
@@ -86,12 +90,14 @@ public extension GridPreset {
         name: "6-Column Airy",
         category: .columnSystems,
         configuration: GridConfiguration(
-            columns: ColumnSpec(count: 6, gutter: 24, margin: 24)
+            columns: ColumnSpec(count: 6, gutter: 24, margin: 24),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
         compactConfiguration: GridConfiguration(
-            columns: ColumnSpec(count: 3, gutter: 20, margin: 20)
+            columns: ColumnSpec(count: 3, gutter: 20, margin: 20),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3)
         ),
-        notes: "Fewer, wider columns with generous gutters — suits content-forward marketing and gallery layouts where breathing room matters."
+        notes: "Fewer, wider columns with generous gutters — suits content-forward marketing and gallery layouts where breathing room matters. 8 pt baseline rhythm."
     )
 
     /// 4 columns, 8 pt gutter, 16 pt margins — Material-style phone grid.
@@ -100,9 +106,10 @@ public extension GridPreset {
         name: "4-Column Mobile",
         category: .columnSystems,
         configuration: GridConfiguration(
-            columns: ColumnSpec(count: 4, gutter: 8, margin: 16)
+            columns: ColumnSpec(count: 4, gutter: 8, margin: 16),
+            baseline: BaselineSpec(rhythm: 4, emphasisEvery: 2)
         ),
-        notes: "The Material Design phone grid: 4 columns, tight 8 pt gutters, 16 pt margins. A pragmatic default for phone-only apps."
+        notes: "The Material Design phone grid: 4 columns, tight 8 pt gutters, 16 pt margins. A pragmatic default for phone-only apps. Type sits on a 4 pt baseline; every 2nd line marks the 8 pt component grid."
     )
 
     /// One measure-limited text column, centered, for long-form reading.
@@ -180,11 +187,12 @@ public extension GridPreset {
         configuration: GridConfiguration(
             columns: ColumnSpec(count: 3, gutter: 16, margin: 24),
             rows: RowSpec(count: 5, gutter: 16, margin: 24),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3),
             keyLines: [
                 KeyLine(name: "Hangline", axis: .horizontal, offset: 0.2, anchor: .start, unit: .fraction),
             ]
         ),
-        notes: "A Müller-Brockmann-style modular grid: 3 columns × 5 rows with a hangline one module down, where feature headlines and images hang. Classic magazine feature layout."
+        notes: "A Müller-Brockmann-style modular grid: 3 columns × 5 rows with a hangline one module down, where feature headlines and images hang. Classic magazine feature layout; the 8 pt baseline keeps text in adjacent modules on the same lines."
     )
 
     /// Denser modular grid for image-rich, catalog-like layouts.
@@ -194,9 +202,10 @@ public extension GridPreset {
         category: .editorial,
         configuration: GridConfiguration(
             columns: ColumnSpec(count: 4, gutter: 12, margin: 20),
-            rows: RowSpec(count: 6, gutter: 12, margin: 20)
+            rows: RowSpec(count: 6, gutter: 12, margin: 20),
+            baseline: BaselineSpec(rhythm: 4, emphasisEvery: 3)
         ),
-        notes: "A denser modular grid for image-rich, catalog-like layouts — product grids, photo indexes, and dashboards with many small units."
+        notes: "A denser modular grid for image-rich, catalog-like layouts — product grids, photo indexes, and dashboards with many small units. A 4 pt baseline whose 12 pt beat matches the gutters."
     )
 
     /// 5-column grid used asymmetrically: 2-column sidebar + 3-column body.
@@ -239,12 +248,13 @@ public extension GridPreset {
         configuration: GridConfiguration(
             columns: ColumnSpec(count: 3, gutter: 16, margin: 24),
             rows: RowSpec(count: 4, gutter: 16, topMargin: 72, bottomMargin: 56),
+            baseline: BaselineSpec(rhythm: 8, emphasisEvery: 3),
             keyLines: [
                 KeyLine(name: "Running head", axis: .horizontal, offset: 48, anchor: .start),
                 KeyLine(name: "Folio", axis: .horizontal, offset: 40, anchor: .end),
             ]
         ),
-        notes: "A book-like modular grid with reserved zones for running heads and folios (page furniture). Useful for reader and document apps where chrome must clear the content block."
+        notes: "A book-like modular grid with reserved zones for running heads and folios (page furniture). Useful for reader and document apps where chrome must clear the content block. Text sits on an 8 pt baseline."
     )
 }
 
@@ -295,9 +305,10 @@ public extension GridPreset {
         category: .appLayouts,
         configuration: GridConfiguration(
             columns: ColumnSpec(count: 2, gutter: 12, margin: 16),
-            rows: RowSpec(count: 6, gutter: 12, margin: 16)
+            rows: RowSpec(count: 6, gutter: 12, margin: 16),
+            baseline: BaselineSpec(rhythm: 4, emphasisEvery: 3)
         ),
-        notes: "A 2-across module grid with 12 pt gutters, matching widget/dashboard layouts. Modules shade the cells your tiles should fill."
+        notes: "A 2-across module grid with 12 pt gutters, matching widget/dashboard layouts. Modules shade the cells your tiles should fill; a 4 pt baseline (12 pt beat) aligns the text inside them."
     )
 }
 

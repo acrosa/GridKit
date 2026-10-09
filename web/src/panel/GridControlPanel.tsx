@@ -1,10 +1,12 @@
 import { useMemo, useRef, useState, type ChangeEvent } from "react";
 import { CYAN, colorFromHex, colorsEqual, cssColor, hexColor, MAGENTA, makeAppearance, RED } from "../config/appearance";
+import { baseline } from "../config/builders";
 import { cloneConfiguration } from "../config/codec";
 import {
   GridLayers,
   hasLayer,
   modularScaleSteps,
+  withLayer,
   type GridColor,
   type GridConfiguration,
   type GridLayer,
@@ -69,7 +71,7 @@ export function GridControlPanel({ kit, containerSize, isCompact, hotkeyLabel }:
           <div className="gk-body">
             <PresetBrowser kit={kit} appliedPresetID={state.appliedPresetID} isCompact={isCompact} />
             <div className="gk-divider" />
-            <LayerToggles kit={kit} layers={state.configuration.layers} />
+            <LayerToggles kit={kit} configuration={state.configuration} />
             <ParameterEditors kit={kit} configuration={state.configuration} />
             <AppearanceControls kit={kit} configuration={state.configuration} />
             <AnchorControl kit={kit} anchor={state.anchor} />
@@ -186,13 +188,14 @@ const LAYER_ENTRIES: Array<[string, GridLayer]> = [
   ["Ruler", "ruler"],
 ];
 
-function LayerToggles({ kit, layers }: { kit: GridKit; layers: number }) {
+function LayerToggles({ kit, configuration }: { kit: GridKit; configuration: GridConfiguration }) {
   return (
     <div className="gk-section">
       <div className="gk-title">Layers</div>
       <div className="gk-chips">
         {LAYER_ENTRIES.map(([name, layer]) => {
-          const on = hasLayer(layers, layer);
+          // A baseline layer with no spec draws nothing, so show it as off.
+          const on = hasLayer(configuration.layers, layer) && (layer !== "baseline" || !!configuration.baseline);
           return (
             <button
               key={layer}
@@ -200,7 +203,17 @@ function LayerToggles({ kit, layers }: { kit: GridKit; layers: number }) {
               className={`gk-btn gk-chip${on ? " gk-on" : ""}`}
               aria-pressed={on}
               aria-label={`${name} layer`}
-              onClick={() => kit.setLayer(layer, !on)}
+              onClick={() => {
+                if (!on && layer === "baseline" && !configuration.baseline) {
+                  // Turning on vertical rhythm for a grid without one adds an editable 8 px baseline.
+                  kit.update((c) => {
+                    c.baseline = baseline(8, 3);
+                    c.layers = withLayer(c.layers, "baseline", true);
+                  });
+                } else {
+                  kit.setLayer(layer, !on);
+                }
+              }}
             >
               {name}
             </button>

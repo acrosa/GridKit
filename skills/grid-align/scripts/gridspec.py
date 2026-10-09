@@ -360,15 +360,25 @@ def _cmd_init(args):
     if args.platform == "web":
         spec["compactBreakpoint"] = DEFAULT_COMPACT_BREAKPOINT_WEB
         spec["web"] = {"url": "http://localhost:5173", "routes": ["/"]}
+    preset_base = None
     if args.preset:
-        preset_by_id(args.preset)  # validate
+        regular, _ = _preset_variants(preset_by_id(args.preset), args.platform)
+        preset_base = regular.get("baseline")
+    # Horizontal baseline lines drive the vertical-rhythm checks. Give every
+    # spec one: an explicit --rhythm, else the preset's, else the spacing base.
+    rhythm = args.rhythm or (None if preset_base else args.spacing_base)
+    if rhythm and not args.no_rhythm:
+        spec["regular"]["baseline"] = {"rhythm": rhythm, "offset": 0, "emphasisEvery": args.emphasis_every or (4 if rhythm <= 4 else 3)}
+    elif args.no_rhythm and preset_base:
+        spec["regular"]["baseline"] = None
     os.makedirs(os.path.dirname(os.path.abspath(args.out)), exist_ok=True)
     if os.path.exists(args.out) and not args.force:
         raise SystemExit(f"{args.out} exists; pass --force to overwrite")
     with open(args.out, "w") as f:
         json.dump(spec, f, indent=2)
         f.write("\n")
-    print(f"Wrote {args.out}")
+    base = spec["regular"].get("baseline", preset_base) if "baseline" in spec["regular"] else preset_base
+    print(f"Wrote {args.out}" + (f" (baseline rhythm {base['rhythm']:g})" if base else " (no baseline rhythm: vertical-rhythm checks are limited to the spacing scale)"))
 
 
 def _cmd_resolve(args):
@@ -410,6 +420,9 @@ def main(argv=None):
     p.add_argument("--platform", choices=["ios", "web"], required=True)
     p.add_argument("--preset")
     p.add_argument("--spacing-base", type=float, default=4)
+    p.add_argument("--rhythm", type=float, help="baseline rhythm (default: the preset's, else the spacing base)")
+    p.add_argument("--emphasis-every", type=int, help="emphasize every Nth baseline (default: 4 for a 4-pt rhythm, else 3)")
+    p.add_argument("--no-rhythm", action="store_true", help="no baseline grid (horizontal lines)")
     p.add_argument("--out", default=".gridkit/spec.json")
     p.add_argument("--force", action="store_true")
     p.set_defaults(fn=_cmd_init)

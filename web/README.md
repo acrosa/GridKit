@@ -123,7 +123,7 @@ const brand = configuration({
 ## Control panel
 
 - **Preset browser** with live miniature thumbnails, grouped by category.
-- **Layer toggles** for columns / rows / baseline / modules / margins / key lines / ruler.
+- **Layer toggles** for columns / rows / baseline / modules / margins / key lines / ruler. Turning on *Baseline* for a grid without one adds an editable 8 px baseline grid.
 - **Live parameter editing** — column count, gutter, margins, rhythm, emphasis, baseline offset.
 - **Appearance** — magenta / cyan / red / custom color, opacity, and a *difference* blend mode that keeps lines visible on any background.
 - **Anchor** — viewport or document.

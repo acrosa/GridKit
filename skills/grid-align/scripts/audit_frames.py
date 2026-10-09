@@ -78,6 +78,7 @@ class Auditor:
             if e.get("parent") is not None:
                 self.children[e["parent"]].append(e)
         self.findings: list[dict] = []
+        self.baseline_stats = None
         self.flagged_intrusion: set[int] = set()
 
     # MARK: helpers
@@ -310,6 +311,87 @@ class Auditor:
             self.add(sev, "type", f"{prop} {v:g}{ctx} is off the {'baseline rhythm' if prop == 'line-height' else 'type scale'} ({len(els)} element{'s' if len(els) > 1 else ''}, e.g. {describe(els[0])}).",
                      el=els[0], fix=f"Use {prop} {target:g}.", count=len(els), extra={"property": prop, "value": v, "expected": target})
 
+    def check_baselines(self):
+        """Text baselines against the horizontal baseline grid. Web only:
+        XCUITest frames don't expose baselines.
+
+        In CSS a line box sits on the rhythm but its glyph baseline sits inside
+        it, at an offset ("phase") set by the font and line-height, so a 16/24
+        paragraph on a perfect 8 px rhythm still has its baseline 2 px below a
+        line. The default mode ("consistent") therefore flags text whose phase
+        differs from other text of the same style: it has drifted off the
+        rhythm, usually because of an off-grid gap above it. "strict" requires
+        every baseline to sit on a line (a true baseline grid)."""
+        base = self.geo.get("baseline")
+        mode = self.spec["raw"].get("baselineAlignment", "consistent")
+        if not base or mode == "off":
+            return
+        rhythm, first = base["rhythm"], base["firstLine"]
+
+        def phase_delta(b):
+            steps = round((b - first) / rhythm)
+            return round(b - (first + steps * rhythm), 2)  # signed offset from the nearest line
+
+        measured = []
+        for el in self.els:
+            b = el.get("baseline")
+            if b is None or el["kind"] != "text" or not self.on_screen_x(el) or b < first:
+                continue
+            parent = self.by_id.get(el.get("parent"))
+            if parent is not None and parent.get("kind") == "text":
+                continue  # inline runs share their block's baseline
+            st = el.get("style") or {}
+            measured.append((el, phase_delta(b), (st.get("fontSize"), st.get("lineHeight"))))
+        on_line = sum(1 for _, d, _ in measured if abs(d) <= self.tol)
+        self.baseline_stats = {"mode": mode, "measured": len(measured), "onLine": on_line}
+        if not measured:
+            return
+
+        def circular(a, b):
+            d = abs(a - b) % rhythm
+            return min(d, rhythm - d)
+
+        off = []  # (el, delta from target, target phase, style)
+        if mode == "strict":
+            off = [(el, d, 0.0, style) for el, d, style in measured if abs(d) > self.tol]
+        else:
+            by_style = collections.defaultdict(list)
+            for el, d, style in measured:
+                by_style[style].append((el, d))
+            for style, items in by_style.items():
+                # Dominant phase for the style; ties go to the topmost element.
+                counts = collections.Counter()
+                for _, d in items:
+                    match = next((p for p in counts if circular(p, d) <= self.tol), d)
+                    counts[match] += 1
+                best = max(counts.values())
+                dominant = next(d for _, d in sorted(items, key=lambda i: i[0]["y"]) if any(circular(p, d) <= self.tol and counts[p] == best for p in counts))
+                for el, d in items:
+                    if circular(d, dominant) > self.tol:
+                        delta = round(d - dominant, 2)
+                        delta = round((delta + rhythm / 2) % rhythm - rhythm / 2, 2)
+                        off.append((el, delta, dominant, style))
+        self.baseline_stats["offPhase"] = len(off)
+
+        groups = collections.OrderedDict()
+        for el, delta, target, style in off:
+            groups.setdefault((el.get("component") or el.get("selector"), delta), {"els": [], "style": style, "target": target})["els"].append(el)
+        for (who, delta), g in groups.items():
+            els, (fs, lh) = g["els"], g["style"]
+            ctx = f" (font-size {fs:g}, line-height {lh:g})" if fs and lh else (f" (font-size {fs:g}, line-height normal)" if fs else "")
+            more = f" and {len(els) - 1} similar" if len(els) > 1 else ""
+            where = "below" if delta > 0 else "above"
+            if mode == "strict":
+                msg = f"Text baseline is {abs(delta):g} {where} the nearest {rhythm:g} baseline on {describe(els[0])}{ctx}{more}."
+                fix = (f"Shift this text style by {-delta:+g}: position: relative; top: {-delta:g}px moves the glyphs onto the line without moving anything else. "
+                       f"Or trim the line box (text-box: trim-both cap alphabetic) and pad it back to a multiple of {rhythm:g}.")
+            else:
+                msg = (f"Text baseline has drifted {abs(delta):g} {where} where other text of the same style sits on the {rhythm:g} grid, on {describe(els[0])}{ctx}{more}. "
+                       f"Something above it is off the rhythm.")
+                fix = f"Find the off-rhythm gap or height above it (see the rhythm/spacing findings) and fix that; the text then moves {-delta:+g} back into phase."
+            self.add("warn", "baseline", msg, el=els[0], count=len(els), fix=fix,
+                     extra={"delta": delta, "baselineY": els[0]["baseline"], "expected": round(els[0]["baseline"] - delta, 2)})
+
     def check_horizontal_lines(self):
         lines = []
         for k in self.geo.get("keyLines", []):
@@ -356,6 +438,7 @@ class Auditor:
         self.check_vertical_rhythm()
         self.check_computed_spacing()
         self.check_type()
+        self.check_baselines()
         self.check_horizontal_lines()
         self.check_vertical_key_lines()
         ignore = self.spec["raw"].get("ignore") or []
@@ -371,12 +454,26 @@ class Auditor:
         return self.findings
 
 
-def render_md(name, geo, findings):
+def render_md(name, geo, findings, baseline_stats=None):
     out = [f"### {name} — {geo['viewport']['width']:g}×{geo['viewport']['height']:g} ({geo['variant']} grid)\n"]
-    cols = geo.get("columns")
+    cols, rows, base = geo.get("columns"), geo.get("rows"), geo.get("baseline")
+    parts = []
     if cols:
-        out.append(f"Grid: {cols['count']} columns × {cols['columnWidth']:g}, gutter {cols['gutter']:g}, content {cols['contentStart']:g}–{cols['contentEnd']:g}"
-                   + (f", rhythm {geo['baseline']['rhythm']:g}" if geo.get("baseline") else "") + "\n")
+        parts.append(f"{cols['count']} columns × {cols['columnWidth']:g}, gutter {cols['gutter']:g}, content {cols['contentStart']:g}–{cols['contentEnd']:g}")
+    if rows:
+        parts.append(f"{rows['count']} rows × {rows['rowHeight']:g}, gutter {rows['gutter']:g}")
+    if base:
+        parts.append(f"baseline rhythm {base['rhythm']:g} from y {base['firstLine']:g}")
+    if parts:
+        out.append("Grid: " + "; ".join(parts) + "\n")
+    if not base:
+        out.append("_No baseline rhythm in the spec: vertical gaps are checked against the spacing scale; line-height and baseline checks are skipped._\n")
+    elif baseline_stats and baseline_stats["measured"]:
+        st, total = baseline_stats, baseline_stats["measured"]
+        line = f"Baselines: {st['onLine']} of {total} text blocks sit exactly on a line"
+        if st["mode"] != "strict":
+            line += f"; {total - st.get('offPhase', 0)} of {total} keep their text style's phase (consistent mode)"
+        out.append(line + ".\n")
     counts = collections.Counter(f["severity"] for f in findings)
     out.append(f"**{counts['error']} errors, {counts['warn']} warnings, {counts['info']} info**\n")
     if findings:
@@ -405,9 +502,12 @@ def main(argv=None):
     findings = auditor.run()
     name = args.name or frames.get("name") or os.path.splitext(os.path.basename(args.frames))[0]
     if args.format == "json":
-        print(json.dumps({"name": name, "geometry": auditor.geo, "findings": findings}, indent=2))
+        out = {"name": name, "geometry": auditor.geo, "findings": findings}
+        if auditor.baseline_stats:
+            out["baselineStats"] = auditor.baseline_stats
+        print(json.dumps(out, indent=2))
     else:
-        print(render_md(name, auditor.geo, findings))
+        print(render_md(name, auditor.geo, findings, auditor.baseline_stats))
 
 
 if __name__ == "__main__":

@@ -77,6 +77,24 @@
     return null;
   }
 
+  // First-line baseline of a text block, measured with a zero-size
+  // inline-block probe (its bottom edge sits on the baseline). Only for flow
+  // layouts, where an extra inline child can't change the layout; null otherwise.
+  const FLOW = new Set(["block", "inline-block", "list-item", "table-cell", "flow-root", "table-caption"]);
+  function firstBaseline(el, cs) {
+    if (!FLOW.has(cs.display)) return null;
+    const probe = document.createElement("span");
+    // Not data-gridkit: capture hides those, and a hidden probe has no box.
+    probe.setAttribute("data-gridkit-probe", "");
+    probe.style.cssText = "display:inline-block!important;width:0;height:0;padding:0;margin:0;border:0;vertical-align:baseline";
+    const first = [...el.childNodes].find((n) => (n.nodeType === 3 && n.textContent.trim()) || n.nodeType === 1);
+    el.insertBefore(probe, first || null);
+    const r = probe.getBoundingClientRect();
+    probe.remove();
+    if (r.top === 0 && r.left === 0 && r.bottom === 0 && r.right === 0 && probe.getClientRects().length === 0) return null;
+    return Math.round((r.bottom + sy) * 100) / 100;
+  }
+
   const elements = [];
   const indexOf = new Map();
 
@@ -134,6 +152,7 @@
             lineHeight: kind === "text" ? px(cs.lineHeight) : null, // null when "normal"
           },
         };
+        if (kind === "text") item.baseline = firstBaseline(el, cs);
         indexOf.set(el, item.id);
         elements.push(item);
         myIndex = item.id;

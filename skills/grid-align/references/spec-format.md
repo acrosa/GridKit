@@ -29,7 +29,8 @@ The audit target. It is a superset of GridKit's configuration JSON: any file Gri
 | `preset` | Optional base from GridKit's preset library (`gridspec.py presets`). |
 | `regular` / `compact` | GridKit configuration layers (`columns`, `rows`, `baseline`, `keyLines`, `modularScale`, `respectsSafeArea`), plus `maxContentWidth`. They merge over the preset layer by layer, so `{"columns": {"gutter": 24}}` changes only the gutter. `null` removes a layer. A tweak to `regular` also carries into the preset's compact variant, except for column count. `"compact": null` disables the compact variant. |
 | `columns` | `count`, `gutter`, `leadingMargin`, `trailingMargin` (or `margin` for both), optional `highlightedColumns: [from, to]`. |
-| `baseline` | `rhythm`, `offset`, `emphasisEvery`. The rhythm drives the vertical gap and line-height checks. |
+| `baseline` | `rhythm`, `offset`, `emphasisEvery`: the horizontal baseline grid. The rhythm drives the vertical gap, line-height and text-baseline checks. `gridspec.py init` always writes one: `--rhythm`, else the preset's, else the spacing base. `--no-rhythm` opts out. |
+| `baselineAlignment` | `"consistent"` (default), `"strict"` or `"off"`. How the web audit judges text baselines against the grid (see `frames-format.md`, Baseline grid). |
 | `maxContentWidth` | Caps the content area and centers it (a centered `.container`). GridKit's overlay has no equivalent. The audit adds the extra inset to both margins. |
 | `compactBreakpoint` | Web: viewport widths below this use `compact` (default 768, matching gridkit-react). iOS: width heuristic for the horizontal size class (default 600). Frames captured by the UI test carry their real size class, which wins. |
 | `spacing` | The spacing scale. `base`: any multiple is allowed (default 4). Or `scale`: an explicit list. `allow`: extra always-OK values (default `[0, 1]` for hairlines). Gutters and margins from the grid are always allowed. |
@@ -59,4 +60,4 @@ These are typical values. When it matters, confirm them on the simulator (`Geome
 
 - **Gutter vs margin:** margins ≥ gutter reads as framed. On phones, 16 pt margins with 8–16 gutters is the norm (Material: 16/8, iOS readable margins: 16/20).
 - **Spacing base:** 8 for most products, 4 for dense data UIs. Expect existing values like 12 and 20 on an 8-pt base. Either allow them via `allow`, or plan to migrate them.
-- **Rhythm:** use 4 or 8 for UI, or the body line height (`body-derived-rhythm`) for text-heavy reading layouts.
+- **Rhythm:** use 4 or 8 for UI, or the body line height (`body-derived-rhythm`) for text-heavy reading layouts. Match it to the spacing base, or to a divisor of it, so every on-scale gap is also on the rhythm. `emphasisEvery` marks the larger beat, e.g. 3 × 8 = 24 for section spacing.
