@@ -94,12 +94,14 @@ Sixteen presets in four categories, each with notes documenting its origin and i
 
 Presets adapt to size classes: column systems define compact-width variants (e.g. `swissTwelveColumn` renders 4 columns in compact width).
 
+Every preset except `heroSplit` (pure golden-section key lines) includes a baseline grid, so the horizontal lines for vertical rhythm are there by default. Column and editorial grids use an 8 pt rhythm. The 12-pt-gutter grids (`modular4x6`, `dashboardModules`) use 4 pt with a 12 pt beat, and `fourColumnMobile` uses 4 pt with an 8 pt beat.
+
 ## Control panel
 
 Summoned by the activation gesture — or always present as a floating pill in `.floatingButton` mode (tap the glyph to toggle the grid, tap the label to expand). Draggable and collapsible; state persists across launches:
 
 - **Preset browser** with live miniature thumbnails, grouped by category.
-- **Layer toggles** for columns / rows / baseline / modules / margins / key lines / ruler.
+- **Layer toggles** for columns / rows / baseline / modules / margins / key lines / ruler. Turning on *Baseline* for a grid without one adds an editable 8 pt baseline grid.
 - **Live parameter editing** — column count, gutter, margins, rhythm, emphasis.
 - **Appearance** — magenta / cyan / red / custom color, opacity, and a *difference* blend mode that keeps lines visible on any background.
 - **Snapshot** (screen + grid composite) and **JSON export** for design review.
@@ -144,8 +146,8 @@ Then ask Claude something like *"audit this app against a 12-column grid with an
 2. **Audit:**
    - A static scan finds off-scale paddings, stack spacings, gaps, insets, offsets and Tailwind classes.
    - A runtime capture measures real element frames with Playwright on the web, or with an XCUITest that dumps accessibility frames on iOS.
-   - Both are checked for margin intrusions, near-miss column edges, wrong spans, doubled margins, off-rhythm gaps and line heights, key lines and overflow.
-3. **Evidence:** screenshots per route and viewport, with the grid and numbered findings drawn on top.
+   - Both are checked for margin intrusions, near-miss column edges, wrong spans, doubled margins, off-rhythm gaps and line heights, key lines, row edges and overflow. On the web, text baselines are measured against the baseline grid too.
+3. **Evidence:** screenshots per route and viewport, with the grid drawn on top: columns, rows, and the baseline lines with their emphasized beat. Numbered findings are marked on the screenshot too.
 4. **Report:** `.gridkit/audit/REPORT.md`, with findings grouped by root cause and a fix plan.
 5. **Fixes (optional):** grid tokens first, then idiomatic layout fixes. On iOS that means `containerRelativeFrame`, `contentMargins`, a column `Layout` and size-class variants. On the web it means CSS Grid spans, `subgrid`, container/safe-area margins and rhythm-snapped line heights. Afterwards the skill re-audits and reports before/after.
 

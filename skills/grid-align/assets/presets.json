@@ -5,28 +5,28 @@
       "id": "swiss-12-column",
       "name": "Swiss 12-Column",
       "platforms": ["ios", "web"],
-      "regular": { "columns": { "count": 12, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } },
-      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } }
+      "regular": { "columns": { "count": 12, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } },
+      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } }
     },
     {
       "id": "eight-column",
       "name": "8-Column",
       "platforms": ["ios", "web"],
-      "regular": { "columns": { "count": 8, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 } },
-      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } }
+      "regular": { "columns": { "count": 8, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } },
+      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } }
     },
     {
       "id": "six-column",
       "name": "6-Column Airy",
       "platforms": ["ios", "web"],
-      "regular": { "columns": { "count": 6, "gutter": 24, "leadingMargin": 24, "trailingMargin": 24 } },
-      "compact": { "columns": { "count": 3, "gutter": 20, "leadingMargin": 20, "trailingMargin": 20 } }
+      "regular": { "columns": { "count": 6, "gutter": 24, "leadingMargin": 24, "trailingMargin": 24 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } },
+      "compact": { "columns": { "count": 3, "gutter": 20, "leadingMargin": 20, "trailingMargin": 20 }, "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } }
     },
     {
       "id": "four-column-mobile",
       "name": "4-Column Mobile",
       "platforms": ["ios", "web"],
-      "regular": { "columns": { "count": 4, "gutter": 8, "leadingMargin": 16, "trailingMargin": 16 } }
+      "regular": { "columns": { "count": 4, "gutter": 8, "leadingMargin": 16, "trailingMargin": 16 }, "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 2 } }
     },
     {
       "id": "single-column-reader",
@@ -76,6 +76,7 @@
       "regular": {
         "columns": { "count": 3, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 },
         "rows": { "count": 5, "gutter": 16, "topMargin": 24, "bottomMargin": 24 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 },
         "keyLines": [{ "name": "Hangline", "axis": "horizontal", "offset": 0.2, "anchor": "start", "unit": "fraction" }]
       }
     },
@@ -85,7 +86,8 @@
       "platforms": ["ios", "web"],
       "regular": {
         "columns": { "count": 4, "gutter": 12, "leadingMargin": 20, "trailingMargin": 20 },
-        "rows": { "count": 6, "gutter": 12, "topMargin": 20, "bottomMargin": 20 }
+        "rows": { "count": 6, "gutter": 12, "topMargin": 20, "bottomMargin": 20 },
+        "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 3 }
       }
     },
     {
@@ -115,6 +117,7 @@
       "regular": {
         "columns": { "count": 3, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 },
         "rows": { "count": 4, "gutter": 16, "topMargin": 72, "bottomMargin": 56 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 },
         "keyLines": [
           { "name": "Running head", "axis": "horizontal", "offset": 48, "anchor": "start", "unit": "points" },
           { "name": "Folio", "axis": "horizontal", "offset": 40, "anchor": "end", "unit": "points" }
@@ -188,16 +191,19 @@
       "platforms": ["ios", "web"],
       "regular": {
         "columns": { "count": 2, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
-        "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+        "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 },
+        "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 3 }
       },
       "web": {
         "regular": {
           "columns": { "count": 4, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
-          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 },
+          "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 3 }
         },
         "compact": {
           "columns": { "count": 2, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
-          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 },
+          "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 3 }
         }
       }
     }

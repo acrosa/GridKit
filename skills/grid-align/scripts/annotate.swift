@@ -63,16 +63,33 @@ if let cols = geometry["columns"] as? [String: Any] {
         ctx.stroke(r)
     }
 }
+if let rows = geometry["rows"] as? [String: Any] {
+    let starts = (rows["starts"] as! [NSNumber]).map { CGFloat($0.doubleValue) }
+    let height = num(rows["rowHeight"])
+    for y in starts {
+        let r = CGRect(x: 0, y: y, width: pointWidth, height: height)
+        ctx.setFillColor(magenta.copy(alpha: 0.06)!)
+        ctx.fill(r)
+        ctx.setStrokeColor(magenta.copy(alpha: 0.5)!)
+        ctx.setLineWidth(1 / scale)
+        ctx.stroke(r)
+    }
+}
 if drawBaseline, let base = geometry["baseline"] as? [String: Any] {
+    // Horizontal baseline grid; every Nth line (the "beat") drawn stronger.
     let rhythm = num(base["rhythm"])
+    let every = (base["emphasisEvery"] as? NSNumber)?.intValue ?? 0
     var y = num(base["firstLine"])
-    ctx.setStrokeColor(color(0, 0.75, 1, 0.3))
+    var i = 0
     ctx.setLineWidth(1 / scale)
     while rhythm > 0.5, y <= ptH {
+        let emphasized = every > 0 && i % every == 0
+        ctx.setStrokeColor(color(0, 0.75, 1, emphasized ? 0.6 : 0.3))
         ctx.move(to: CGPoint(x: 0, y: y)); ctx.addLine(to: CGPoint(x: pointWidth, y: y))
+        ctx.strokePath()
         y += rhythm
+        i += 1
     }
-    ctx.strokePath()
 }
 if let keyLines = geometry["keyLines"] as? [[String: Any]] {
     ctx.setStrokeColor(color(0, 0.8, 0.45, 0.9))
@@ -88,6 +105,14 @@ if let keyLines = geometry["keyLines"] as? [[String: Any]] {
     }
     ctx.strokePath()
     ctx.setLineDash(phase: 0, lengths: [])
+}
+
+// Where off-grid text actually sits: a solid line on its measured baseline.
+for f in findings {
+    guard let y = f["baselineY"] as? NSNumber, let r = f["rect"] as? [String: Any] else { continue }
+    let c = ["error": color(1, 0.18, 0.33, 1), "warn": color(1, 0.58, 0, 1)][f["severity"] as? String ?? ""] ?? color(0.04, 0.52, 1, 1)
+    ctx.setFillColor(c)
+    ctx.fill(CGRect(x: num(r["x"]), y: CGFloat(y.doubleValue), width: num(r["w"]), height: 2))
 }
 
 // One box per element; the badge lists every finding number on it.

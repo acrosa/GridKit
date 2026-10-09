@@ -29,6 +29,28 @@ final class GridPresetTests: XCTestCase {
         XCTAssertEqual(GridPreset.all.count, expected.count)
     }
 
+    /// Horizontal baseline lines are what vertical rhythm is checked against,
+    /// so every grid ships with one — except the pure key-line golden split.
+    func testEveryPresetHasABaselineGrid() {
+        for preset in GridPreset.all where preset.id != "hero-split" {
+            for config in [preset.configuration, preset.compactConfiguration].compactMap({ $0 }) {
+                XCTAssertNotNil(config.baseline, "\(preset.id) has no baseline grid")
+                XCTAssertTrue(config.layers.contains(.baseline), "\(preset.id) hides its baseline layer")
+            }
+        }
+    }
+
+    func testBaselineRhythmDividesGuttersAndMargins() {
+        for preset in GridPreset.all {
+            for config in [preset.configuration, preset.compactConfiguration].compactMap({ $0 }) {
+                guard let rhythm = config.baseline?.rhythm, let rows = config.rows else { continue }
+                for value in [rows.gutter, rows.topMargin, rows.bottomMargin] {
+                    XCTAssertEqual(value.truncatingRemainder(dividingBy: rhythm), 0, "\(preset.id): row value \(value) is off its \(rhythm) rhythm")
+                }
+            }
+        }
+    }
+
     func testEveryPresetConfigurationRoundTripsThroughJSON() throws {
         for preset in GridPreset.all {
             let data = try JSONEncoder().encode(preset.configuration)

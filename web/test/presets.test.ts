@@ -18,6 +18,28 @@ describe("preset library", () => {
     }
   });
 
+  // Horizontal baseline lines are what vertical rhythm is checked against, so
+  // every grid ships with one — except the pure key-line golden split.
+  it("every preset has a baseline grid", () => {
+    for (const p of presets) {
+      if (p.id === "hero-split") continue;
+      for (const c of [p.configuration, p.compactConfiguration]) {
+        if (!c) continue;
+        expect(c.baseline, p.id).toBeDefined();
+        expect(hasLayer(c.layers, "baseline"), p.id).toBe(true);
+      }
+    }
+  });
+
+  it("modular row gutters and margins sit on the baseline rhythm", () => {
+    for (const p of presets) {
+      for (const c of [p.configuration, p.compactConfiguration]) {
+        if (!c?.rows || !c.baseline) continue;
+        for (const v of [c.rows.gutter, c.rows.topMargin, c.rows.bottomMargin]) expect(v % c.baseline.rhythm, p.id).toBe(0);
+      }
+    }
+  });
+
   it("every preset has at least one drawable layer with a backing spec", () => {
     for (const p of presets) {
       const c = p.configuration;

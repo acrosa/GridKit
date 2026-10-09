@@ -45,16 +45,37 @@
       tag.textContent = String(i + 1);
     });
   }
+  const rows = g.rows;
+  if (rows) {
+    rows.starts.forEach((y, i) => {
+      box(0, y, width, rows.rowHeight, {
+        background: "rgba(255,0,140,0.05)",
+        borderTop: "1px solid rgba(255,0,140,0.45)",
+        borderBottom: "1px solid rgba(255,0,140,0.45)",
+      });
+      const tag = box(2, y + 2, 40, 14, { color: "rgba(255,0,140,0.9)" });
+      tag.textContent = `R${i + 1}`;
+    });
+  }
   if (g.baseline && options.baseline !== false) {
+    // Horizontal baseline grid; every Nth line (the "beat") drawn stronger.
     const r = g.baseline.rhythm;
+    const n = g.baseline.emphasisEvery;
+    const line = (alpha, period) => `repeating-linear-gradient(to bottom, rgba(0,190,255,${alpha}) 0, rgba(0,190,255,${alpha}) 1px, transparent 1px, transparent ${period}px)`;
     box(0, g.baseline.firstLine, width, height - g.baseline.firstLine, {
-      backgroundImage: `repeating-linear-gradient(to bottom, rgba(0,190,255,0.22) 0, rgba(0,190,255,0.22) 1px, transparent 1px, transparent ${r}px)`,
+      backgroundImage: n ? `${line(0.55, r * n)}, ${line(0.22, r)}` : line(0.22, r),
     });
   }
   for (const k of g.keyLines || []) {
     const css = { borderColor: "rgba(0,200,120,0.9)", borderStyle: "dashed", borderWidth: "0" };
     if (k.axis === "horizontal") box(0, k.position, width, 1, { ...css, borderTopWidth: "1px" });
     else box(k.position, 0, 1, height, { ...css, borderLeftWidth: "1px" });
+  }
+
+  // Where off-grid text actually sits: a solid line on its measured baseline.
+  for (const f of findings) {
+    if (f.baselineY == null || !f.rect) continue;
+    box(f.rect.x, f.baselineY, f.rect.w, 2, { background: COLORS[f.severity] || COLORS.info });
   }
 
   // One box per element; its badge lists every finding number on it.

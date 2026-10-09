@@ -41,17 +41,19 @@ Ask (AskUserQuestion, one round, recommended option first, based on what Phase 0
 
 - **Grid:** a preset (`swiss-12-column` for most web, `four-column-mobile` or `ios-standard` for phone apps, `asymmetric-editorial`/`modular-*` for content-heavy layouts), their existing GridKit JSON, or custom numbers.
 - **Spacing scale:** 4-pt base (dense UI), 8-pt base (the common default), or an explicit list such as their existing tokens.
+- **Vertical rhythm:** the baseline grid, i.e. the horizontal lines that text and stacked elements sit on. Offer the preset's rhythm (every preset except `hero-split` has one), 4 or 8, or the body line height for reading layouts. Don't drop it unless the user asks: without it, vertical gaps are only checked against the spacing scale, and line heights and text baselines aren't checked at all.
 - **Breakpoints/targets:** which viewport widths or devices matter. Web defaults to 390 / 834 / 1440 with the compact variant below 768. iOS defaults to iPhone 16 and an 11" iPad.
-- **Margins/gutter/max width overrides** only if the preset doesn't fit, e.g. their site caps content at 1200px.
+
+Ask about margin, gutter or max-width overrides afterwards, and only if the preset doesn't fit (e.g. their site caps content at 1200px).
 
 Then write and adjust the spec:
 
 ```bash
-python3 $SKILL/scripts/gridspec.py init --platform web --preset swiss-12-column --spacing-base 8
+python3 $SKILL/scripts/gridspec.py init --platform web --preset swiss-12-column --spacing-base 8   # --rhythm 4 to override the preset's
 python3 $SKILL/scripts/gridspec.py resolve            # every target in the spec
 ```
 
-The full format is in [references/spec-format.md](references/spec-format.md). Show the user a small table of the resolved grid per target (variant, column count, column width, gutter, content span, rhythm), so you both agree on the numbers before anything gets flagged.
+The full format is in [references/spec-format.md](references/spec-format.md). Show the user a small table of the resolved grid per target (variant, column count, column width, gutter, content span, rows, baseline rhythm), so you both agree on the numbers before anything gets flagged.
 
 ## Phase 2: Audit
 
@@ -93,7 +95,7 @@ Open every `*.annotated.png` with the Read tool and compare it against its `*.au
 - **Trace it to source.** Web: grep the selector's classes, the React component name (dev builds report it), or the text label. iOS: grep the accessibility label or identifier string, then find the view that pads it.
 - **Group by root cause.** Ten cards off by 4 is one finding about the card component, not ten.
 
-Severity: **error** (overflow, content inside the margins) > **warn** (near-miss column edges, off-scale spacing, off-rhythm gaps and line heights, near-miss key lines) > **info** (font sizes off the type scale). Checks and tuning are explained in [references/frames-format.md](references/frames-format.md).
+Severity: **error** (overflow, content inside the margins) > **warn** (near-miss column edges, off-scale spacing, off-rhythm gaps and line heights, text baselines that drifted off the baseline grid, near-miss key and row lines) > **info** (font sizes off the type scale). Each web audit also states how many text blocks sit on the baseline grid. Quote it in the report, since it's the clearest measure of vertical rhythm. Checks and tuning are explained in [references/frames-format.md](references/frames-format.md).
 
 ## Phase 3: Report
 
@@ -107,7 +109,7 @@ Write `.gridkit/audit/REPORT.md` with these sections:
    2. Page/screen containers: outer margins, max width, safe areas, breakpoints.
    3. Column layout: spans, gutters, and grid instead of hand-sized widths.
    4. Component spacing: paddings, stack spacing, gaps.
-   5. Vertical rhythm and type: line heights, paragraph spacing, font sizes.
+   5. Vertical rhythm and type: line heights as rhythm multiples, paragraph and section spacing, drifted baselines, font sizes.
    6. One-off nudges: offsets and stray margins. Delete them rather than tune them.
 5. **Exceptions:** intentional deviations being kept.
 

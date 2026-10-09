@@ -64,6 +64,14 @@ Changing `--spacing` rescales every utility, so a site-wide change is a design d
 - `line-height` as a rhythm multiple in absolute units, e.g. `line-height: calc(var(--rhythm) * 3)`, or snap with `round(up, 1.25em, var(--rhythm))` (Chrome 125+, Safari 15.4+, Firefox 118+; guard with `@supports`). Unitless line heights produce sub-pixel `type` findings at most sizes.
 - Remove the browser's `em` defaults on headings and paragraphs (`h1 { margin: 0.67em 0 }` gives 21.44px). Set `margin-block` from the scale, ideally one direction only (`margin-block: 0 var(--space-4)`), or use a flex column `gap` / `.stack > * + *` pattern so margins never collapse unpredictably.
 - `text-box: trim-both cap alphabetic` (Chrome 133+, Safari 18.2+) trims half-leading, so a text block's box starts at the cap height. It's a progressive enhancement for putting text precisely on key lines.
+- **Drifted baselines** (`baseline` findings, consistent mode): don't move the text itself. Find the off-rhythm gap or box height above it. Usually that's a `rhythm`/`spacing` finding a little higher up the page, or an image or control whose height isn't a rhythm multiple (`aspect-ratio` media, 42px buttons). Fix it, and everything below moves back into phase.
+- **Strict baseline grid** (`baselineAlignment: "strict"`): each text style needs one constant shift to put its baseline on a line. With line heights already rhythm multiples, the finding's delta is that shift. Apply it per style, without changing layout: `position: relative; top: <shift>px`. The modern alternative trims the line box to the glyphs and pads it back onto the grid:
+  ```css
+  @supports (text-box: trim-both cap alphabetic) {
+    p { text-box: trim-both cap alphabetic; padding-block: <top>px <bottom>px; } /* top + cap height + bottom = k × rhythm */
+  }
+  ```
+  Re-audit after changing fonts: the shift depends on the font's metrics.
 - Font sizes: map stray sizes to the type scale, and keep fluid type (`clamp()`) endpoints on scale values.
 - Tailwind: `leading-6` (24px), or a token (`leading-(--line-3)` in v4, `leading-[var(--line-3)]` in v3) instead of `leading-snug` where the rhythm matters, and `space-y-4`/`gap-y-4` on the scale.
 

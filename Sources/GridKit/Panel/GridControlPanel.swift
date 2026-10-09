@@ -436,11 +436,19 @@ private struct FlowToggles: View {
     }
 
     private func chip(name: String, layer: GridLayers) -> some View {
+        // A baseline layer with no spec draws nothing, so show it as off.
         let isOn = kit.configuration.layers.contains(layer)
+            && (layer != .baseline || kit.configuration.baseline != nil)
         return Button {
             if isOn {
                 kit.configuration.layers.remove(layer)
             } else {
+                if layer == .baseline, kit.configuration.baseline == nil {
+                    // Turning on vertical rhythm for a grid without one adds
+                    // an editable 8 pt baseline.
+                    kit.willLiveEdit()
+                    kit.configuration.baseline = BaselineSpec(rhythm: 8, emphasisEvery: 3)
+                }
                 kit.configuration.layers.insert(layer)
             }
         } label: {

@@ -38,10 +38,10 @@ export const swissTwelveColumn: GridPreset = {
   id: "swiss-12-column",
   name: "Swiss 12-Column",
   category: "columnSystems",
-  configuration: configuration({ columns: columns(12, 16, 16) }),
-  compactConfiguration: configuration({ columns: columns(4, 16, 16) }),
+  configuration: configuration({ columns: columns(12, 16, 16), baseline: baseline(8, 3) }),
+  compactConfiguration: configuration({ columns: columns(4, 16, 16), baseline: baseline(8, 3) }),
   notes:
-    "The workhorse of Swiss-school layout: 12 divides into halves, thirds, quarters and sixths, making almost any arrangement possible. Renders 4 columns at compact widths.",
+    "The workhorse of Swiss-school layout: 12 divides into halves, thirds, quarters and sixths, making almost any arrangement possible. Renders 4 columns at compact widths, over an 8 px baseline grid for vertical rhythm.",
 };
 
 /** 8 columns for tablet/wide layouts. */
@@ -49,9 +49,9 @@ export const eightColumn: GridPreset = {
   id: "eight-column",
   name: "8-Column",
   category: "columnSystems",
-  configuration: configuration({ columns: columns(8, 16, 24) }),
-  compactConfiguration: configuration({ columns: columns(4, 16, 16) }),
-  notes: "A tablet-friendly system: 8 columns pair naturally with split views and two-up layouts.",
+  configuration: configuration({ columns: columns(8, 16, 24), baseline: baseline(8, 3) }),
+  compactConfiguration: configuration({ columns: columns(4, 16, 16), baseline: baseline(8, 3) }),
+  notes: "A tablet-friendly system: 8 columns pair naturally with split views and two-up layouts. 8 px baseline rhythm.",
 };
 
 /** 6 columns with generous 24 px gutters. */
@@ -59,10 +59,10 @@ export const sixColumn: GridPreset = {
   id: "six-column",
   name: "6-Column Airy",
   category: "columnSystems",
-  configuration: configuration({ columns: columns(6, 24, 24) }),
-  compactConfiguration: configuration({ columns: columns(3, 20, 20) }),
+  configuration: configuration({ columns: columns(6, 24, 24), baseline: baseline(8, 3) }),
+  compactConfiguration: configuration({ columns: columns(3, 20, 20), baseline: baseline(8, 3) }),
   notes:
-    "Fewer, wider columns with generous gutters — suits content-forward marketing and gallery layouts where breathing room matters.",
+    "Fewer, wider columns with generous gutters — suits content-forward marketing and gallery layouts where breathing room matters. 8 px baseline rhythm.",
 };
 
 /** 4 columns, 8 px gutter, 16 px margins — Material-style phone grid. */
@@ -70,9 +70,9 @@ export const fourColumnMobile: GridPreset = {
   id: "four-column-mobile",
   name: "4-Column Mobile",
   category: "columnSystems",
-  configuration: configuration({ columns: columns(4, 8, 16) }),
+  configuration: configuration({ columns: columns(4, 8, 16), baseline: baseline(4, 2) }),
   notes:
-    "The Material Design phone grid: 4 columns, tight 8 px gutters, 16 px margins. A pragmatic default for mobile-first sites.",
+    "The Material Design phone grid: 4 columns, tight 8 px gutters, 16 px margins. A pragmatic default for mobile-first sites. Type sits on a 4 px baseline; every 2nd line marks the 8 px component grid.",
 };
 
 /** One measure-limited text column, centered, for long-form reading. */
@@ -151,10 +151,11 @@ export const modular3x5: GridPreset = {
   configuration: configuration({
     columns: columns(3, 16, 24),
     rows: rows(5, 16, 24),
+    baseline: baseline(8, 3),
     keyLines: [keyLine("Hangline", "horizontal", 0.2, "start", "fraction")],
   }),
   notes:
-    "A Müller-Brockmann-style modular grid: 3 columns × 5 rows with a hangline one module down, where feature headlines and images hang. Classic magazine feature layout.",
+    "A Müller-Brockmann-style modular grid: 3 columns × 5 rows with a hangline one module down, where feature headlines and images hang. Classic magazine feature layout; the 8 px baseline keeps text in adjacent modules on the same lines.",
 };
 
 /** Denser modular grid for image-rich, catalog-like layouts. */
@@ -162,9 +163,9 @@ export const modular4x6: GridPreset = {
   id: "modular-4x6",
   name: "Modular 4×6",
   category: "editorial",
-  configuration: configuration({ columns: columns(4, 12, 20), rows: rows(6, 12, 20) }),
+  configuration: configuration({ columns: columns(4, 12, 20), rows: rows(6, 12, 20), baseline: baseline(4, 3) }),
   notes:
-    "A denser modular grid for image-rich, catalog-like layouts — product grids, photo indexes, and dashboards with many small units.",
+    "A denser modular grid for image-rich, catalog-like layouts — product grids, photo indexes, and dashboards with many small units. A 4 px baseline whose 12 px beat matches the gutters.",
 };
 
 /** 5-column grid used asymmetrically: 2-column sidebar + 3-column body. */
@@ -203,10 +204,11 @@ export const folioGrid: GridPreset = {
   configuration: configuration({
     columns: columns(3, 16, 24),
     rows: rows(4, 16, { top: 72, bottom: 56 }),
+    baseline: baseline(8, 3),
     keyLines: [keyLine("Running head", "horizontal", 48, "start"), keyLine("Folio", "horizontal", 40, "end")],
   }),
   notes:
-    "A book-like modular grid with reserved zones for running heads and folios (page furniture). Useful for reader and documentation sites where chrome must clear the content block.",
+    "A book-like modular grid with reserved zones for running heads and folios (page furniture). Useful for reader and documentation sites where chrome must clear the content block. Text sits on an 8 px baseline.",
 };
 
 // MARK: - Web layouts
@@ -256,10 +258,10 @@ export const dashboardModules: GridPreset = {
   id: "dashboard-modules",
   name: "Dashboard Modules",
   category: "appLayouts",
-  configuration: configuration({ columns: columns(4, 12, 16), rows: rows(6, 12, 16) }),
-  compactConfiguration: configuration({ columns: columns(2, 12, 16), rows: rows(6, 12, 16) }),
+  configuration: configuration({ columns: columns(4, 12, 16), rows: rows(6, 12, 16), baseline: baseline(4, 3) }),
+  compactConfiguration: configuration({ columns: columns(2, 12, 16), rows: rows(6, 12, 16), baseline: baseline(4, 3) }),
   notes:
-    "A 4-across module grid (2 at compact widths) with 12 px gutters, matching widget/dashboard layouts. Modules shade the cells your tiles should fill.",
+    "A 4-across module grid (2 at compact widths) with 12 px gutters, matching widget/dashboard layouts. Modules shade the cells your tiles should fill; a 4 px baseline (12 px beat) aligns the text inside them.",
 };
 
 // MARK: - Registry
