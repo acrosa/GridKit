@@ -1,0 +1,205 @@
+{
+  "_comment": "Mirror of GridKit's preset library (Sources/GridKit/Presets/GridPreset.swift and web/src/presets/index.ts). Values are pt on iOS and CSS px on the web. `platforms` lists where the preset exists; `ios`/`web` blocks override regular/compact for that platform. Kept in sync by web/test/skill-presets.test.ts.",
+  "presets": [
+    {
+      "id": "swiss-12-column",
+      "name": "Swiss 12-Column",
+      "platforms": ["ios", "web"],
+      "regular": { "columns": { "count": 12, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } },
+      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } }
+    },
+    {
+      "id": "eight-column",
+      "name": "8-Column",
+      "platforms": ["ios", "web"],
+      "regular": { "columns": { "count": 8, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 } },
+      "compact": { "columns": { "count": 4, "gutter": 16, "leadingMargin": 16, "trailingMargin": 16 } }
+    },
+    {
+      "id": "six-column",
+      "name": "6-Column Airy",
+      "platforms": ["ios", "web"],
+      "regular": { "columns": { "count": 6, "gutter": 24, "leadingMargin": 24, "trailingMargin": 24 } },
+      "compact": { "columns": { "count": 3, "gutter": 20, "leadingMargin": 20, "trailingMargin": 20 } }
+    },
+    {
+      "id": "four-column-mobile",
+      "name": "4-Column Mobile",
+      "platforms": ["ios", "web"],
+      "regular": { "columns": { "count": 4, "gutter": 8, "leadingMargin": 16, "trailingMargin": 16 } }
+    },
+    {
+      "id": "single-column-reader",
+      "name": "Single-Column Reader",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 96, "trailingMargin": 96 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 }
+      },
+      "compact": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 24, "trailingMargin": 24 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 }
+      }
+    },
+    {
+      "id": "four-point-rhythm",
+      "name": "4 pt Rhythm",
+      "platforms": ["ios", "web"],
+      "regular": { "baseline": { "rhythm": 4, "offset": 0, "emphasisEvery": 4 } }
+    },
+    {
+      "id": "eight-point-rhythm",
+      "name": "8 pt Rhythm",
+      "platforms": ["ios", "web"],
+      "regular": { "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 } }
+    },
+    {
+      "id": "body-derived-rhythm",
+      "name": "Body-Derived Rhythm",
+      "platforms": ["ios", "web"],
+      "derived": "Rhythm = body line height rounded to 1 (iOS: UIFont body lineHeight ≈ 20 pt at the default size; web: computed body line-height). Replace `rhythm` with the measured value.",
+      "regular": {
+        "baseline": { "rhythm": 20, "offset": 0, "emphasisEvery": 4 },
+        "modularScale": { "ratio": 1.25, "baseSize": 17 }
+      },
+      "web": {
+        "regular": {
+          "baseline": { "rhythm": 24, "offset": 0, "emphasisEvery": 4 },
+          "modularScale": { "ratio": 1.25, "baseSize": 16 }
+        }
+      }
+    },
+    {
+      "id": "modular-3x5",
+      "name": "Modular 3×5",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 3, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 },
+        "rows": { "count": 5, "gutter": 16, "topMargin": 24, "bottomMargin": 24 },
+        "keyLines": [{ "name": "Hangline", "axis": "horizontal", "offset": 0.2, "anchor": "start", "unit": "fraction" }]
+      }
+    },
+    {
+      "id": "modular-4x6",
+      "name": "Modular 4×6",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 4, "gutter": 12, "leadingMargin": 20, "trailingMargin": 20 },
+        "rows": { "count": 6, "gutter": 12, "topMargin": 20, "bottomMargin": 20 }
+      }
+    },
+    {
+      "id": "asymmetric-editorial",
+      "name": "Asymmetric Editorial",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 5, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24, "highlightedColumns": [1, 2] },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 }
+      }
+    },
+    {
+      "id": "hero-split",
+      "name": "Hero Split (Golden)",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "keyLines": [
+          { "name": "Golden section", "axis": "horizontal", "offset": 0.382, "anchor": "start", "unit": "fraction" },
+          { "name": "Golden section (inverse)", "axis": "horizontal", "offset": 0.618, "anchor": "start", "unit": "fraction" }
+        ]
+      }
+    },
+    {
+      "id": "folio-grid",
+      "name": "Folio Grid",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 3, "gutter": 16, "leadingMargin": 24, "trailingMargin": 24 },
+        "rows": { "count": 4, "gutter": 16, "topMargin": 72, "bottomMargin": 56 },
+        "keyLines": [
+          { "name": "Running head", "axis": "horizontal", "offset": 48, "anchor": "start", "unit": "points" },
+          { "name": "Folio", "axis": "horizontal", "offset": 40, "anchor": "end", "unit": "points" }
+        ]
+      }
+    },
+    {
+      "id": "ios-standard",
+      "name": "iOS Standard",
+      "platforms": ["ios"],
+      "regular": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 20, "trailingMargin": 20 },
+        "baseline": { "rhythm": 44, "offset": 0 },
+        "keyLines": [
+          { "name": "Nav bar", "axis": "horizontal", "offset": 44, "anchor": "start", "unit": "points" },
+          { "name": "Tab bar", "axis": "horizontal", "offset": 49, "anchor": "end", "unit": "points" }
+        ]
+      },
+      "compact": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 16, "trailingMargin": 16 },
+        "baseline": { "rhythm": 44, "offset": 0 },
+        "keyLines": [
+          { "name": "Nav bar", "axis": "horizontal", "offset": 44, "anchor": "start", "unit": "points" },
+          { "name": "Tab bar", "axis": "horizontal", "offset": 49, "anchor": "end", "unit": "points" }
+        ]
+      }
+    },
+    {
+      "id": "bootstrap-container",
+      "name": "Bootstrap 12 / 24",
+      "platforms": ["web"],
+      "regular": {
+        "columns": { "count": 12, "gutter": 24, "leadingMargin": 12, "trailingMargin": 12 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 }
+      },
+      "compact": {
+        "columns": { "count": 4, "gutter": 24, "leadingMargin": 12, "trailingMargin": 12 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 }
+      }
+    },
+    {
+      "id": "web-app-shell",
+      "name": "App Shell",
+      "platforms": ["web"],
+      "regular": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 24, "trailingMargin": 24 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 },
+        "keyLines": [
+          { "name": "Header", "axis": "horizontal", "offset": 64, "anchor": "start", "unit": "points" },
+          { "name": "Sidebar", "axis": "vertical", "offset": 256, "anchor": "start", "unit": "points" }
+        ]
+      },
+      "compact": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 16, "trailingMargin": 16 },
+        "baseline": { "rhythm": 8, "offset": 0, "emphasisEvery": 3 },
+        "keyLines": [{ "name": "Header", "axis": "horizontal", "offset": 56, "anchor": "start", "unit": "points" }]
+      }
+    },
+    {
+      "id": "card-feed",
+      "name": "Card Feed",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 1, "gutter": 0, "leadingMargin": 16, "trailingMargin": 16 },
+        "baseline": { "rhythm": 12, "offset": 0, "emphasisEvery": 2 }
+      }
+    },
+    {
+      "id": "dashboard-modules",
+      "name": "Dashboard Modules",
+      "platforms": ["ios", "web"],
+      "regular": {
+        "columns": { "count": 2, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
+        "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+      },
+      "web": {
+        "regular": {
+          "columns": { "count": 4, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
+          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+        },
+        "compact": {
+          "columns": { "count": 2, "gutter": 12, "leadingMargin": 16, "trailingMargin": 16 },
+          "rows": { "count": 6, "gutter": 12, "topMargin": 16, "bottomMargin": 16 }
+        }
+      }
+    }
+  ]
+}

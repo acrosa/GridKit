@@ -1,0 +1,107 @@
+/*
+ * Grid tokens + layout primitives for aligning a site to its grid.
+ * Template from GridKit's grid-align skill: fill the numbers in from
+ * .gridkit/spec.json (`gridspec.py resolve` prints them), rename to match the
+ * project's conventions, and delete what you don't use. Tailwind projects:
+ * put the tokens in the theme instead (see references/css-fixes.md).
+ */
+:root {
+  /* compact variant (below the spec's compactBreakpoint) */
+  --grid-columns: 4;
+  --grid-gutter: 16px;
+  --grid-margin: 16px;
+  --grid-max: 100vw; /* no cap; set e.g. 1200px to cap the content area */
+
+  /* rhythm + spacing scale */
+  --rhythm: 8px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+}
+
+@media (min-width: 768px) {
+  /* regular variant */
+  :root {
+    --grid-columns: 12;
+    --grid-gutter: 16px;
+    --grid-margin: 16px;
+  }
+}
+
+/* Page content area: margins (never smaller than the device safe area) + optional max width. */
+.container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--grid-max) + 2 * var(--grid-margin));
+  margin-inline: auto;
+  padding-inline: max(var(--grid-margin), env(safe-area-inset-left)) max(var(--grid-margin), env(safe-area-inset-right));
+}
+
+/* Column grid. minmax(0, 1fr) keeps long content from widening a column. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-columns), minmax(0, 1fr));
+  column-gap: var(--grid-gutter);
+  row-gap: var(--space-4);
+}
+
+/* Spans. A span larger than the column count creates implicit columns and
+   breaks the grid, so wide spans collapse to full width below the breakpoint. */
+.span-full { grid-column: 1 / -1; }
+.span-1 { grid-column: span 1; }
+.span-2 { grid-column: span 2; }
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-6, .span-8, .span-12 { grid-column: 1 / -1; }
+@media (min-width: 768px) {
+  .span-6 { grid-column: span 6; }
+  .span-8 { grid-column: span 8; }
+  .span-12 { grid-column: span 12; }
+}
+
+/* Nested components that should keep aligning to the page columns. */
+.subgrid {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  column-gap: var(--grid-gutter);
+}
+
+/* Full-bleed sections inside a centered content column. The side tracks
+   already provide the margins, so direct children must not also be
+   .container (that doubles the margin); use .container only inside
+   .full-bleed children. */
+.bleed-layout {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--grid-margin), 1fr)
+    [content-start] min(100% - 2 * var(--grid-margin), var(--grid-max))
+    [content-end] minmax(var(--grid-margin), 1fr) [full-end];
+}
+.bleed-layout > * { grid-column: content; }
+.bleed-layout > .full-bleed { grid-column: full; }
+
+/* Vertical rhythm: every line box is a whole number of rhythm steps. */
+body {
+  line-height: calc(var(--rhythm) * 3);
+}
+h1, h2, h3, h4, p, ul, ol, figure, blockquote {
+  margin-block: 0 calc(var(--rhythm) * 2);
+}
+/* Snap any line-height to the rhythm, where round() is supported. */
+@supports (line-height: round(up, 1.3em, 8px)) {
+  h1 { line-height: round(up, 1.15em, var(--rhythm)); }
+  h2, h3 { line-height: round(up, 1.25em, var(--rhythm)); }
+}
+
+/* Stack: consistent spacing between siblings without margin collapsing surprises. */
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--stack-space, var(--space-4));
+}

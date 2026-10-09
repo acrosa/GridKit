@@ -1,0 +1,10 @@
+{
+  "name": "gridkit",
+  "version": "0.1.0",
+  "description": "Audit an iOS (SwiftUI/UIKit) or web (CSS/Tailwind/React) app against a GridKit layout grid and align the UI to it: annotated screenshots, spacing scan, report, and fixes.",
+  "author": { "name": "Alejandro Crosa" },
+  "homepage": "https://github.com/acrosa/GridKit",
+  "repository": "https://github.com/acrosa/GridKit",
+  "license": "MIT",
+  "keywords": ["grid", "layout", "design", "swiftui", "css", "tailwind", "audit"]
+}

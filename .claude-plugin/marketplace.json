@@ -1,0 +1,14 @@
+{
+  "name": "gridkit",
+  "description": "GridKit tools for Claude Code: audit and align app UIs to a layout grid.",
+  "owner": {
+    "name": "Alejandro Crosa"
+  },
+  "plugins": [
+    {
+      "name": "gridkit",
+      "source": "./",
+      "description": "Grid alignment audit + fixes for iOS and web apps, built on GridKit's grid presets."
+    }
+  ]
+}
